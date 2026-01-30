@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Menta: A Small Language Model for On-Device Mental Health Prediction</title>
+  <title>MentaBench: A Multi-Task Benchmark for Mobile Mental Health Prediction with Small Language Models on Social Media Posts</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Menta: A Small Language Model for On-Device Mental Health Prediction" />
+  <meta name="description" content="MentaBench: A Multi-Task Benchmark for Mobile Mental Health Prediction with Small Language Models on Social Media Posts" />
   <style>
     :root {
       --bg-from: #d8f1ea;
@@ -319,25 +319,24 @@
   <!-- ---------- HERO 顶部 ---------- -->
   <section class="hero">
   <div class="hero-inner">
-    <h1 class="title">Menta: A Small Language Model for On-Device Mental Health Prediction</h1>
+    <h1 class="title">MentaBench: A Multi-Task Benchmark for Mobile Mental Health Prediction with Small Language Models on Social Media Posts</h1>
 
     <!-- 作者：名字 + * + 上标符号 -->
     <div class="authors">
       Tianyi Zhang<sup>†</sup>*,
       Xiangyuan Xue<sup>§</sup>*,
       Lingyan Ruan<sup>†</sup>,
-      Shiya Fu<sup>†</sup>,
-      Feng Xia<sup>‡</sup>,
+      Yan Gao<sup>‡</sup>,
       Simon D'Alfonso<sup>†</sup>,
       Vassilis Kostakos<sup>†</sup>,
       Ting Dang<sup>†</sup>,
       Hong Jia<sup>§</sup>
     </div>
 
-    <!-- 单位：先 Melbourne，再 RMIT，最后 Auckland -->
+    <!-- 单位：先 Melbourne，再 Cambridge，最后 Auckland -->
     <div class="affiliations">
       <span><sup>†</sup> The University of Melbourne, Australia</span><br />
-      <span><sup>‡</sup> RMIT University, Australia</span><br />
+      <span><sup>‡</sup> The University of Cambridge, England</span><br />
       <span><sup>§</sup> The University of Auckland, New&nbsp;Zealand</span><br />
 
       <!-- equal contribution 说明，紧挨着单位 -->
@@ -366,14 +365,6 @@
          class="btn-icon-img" />
     <span>Hugging&nbsp;Face</span>
   </a>
-  <a class="link-btn"
-     href="http://arxiv.org/abs/2512.02716"
-     target="_blank" rel="noopener noreferrer">
-    <img src="arxiv.png"
-         alt="arXiv logo"
-         class="btn-icon-img" />
-    <span>arXiv</span>
-  </a>
 </div>
 
     </div>
@@ -386,17 +377,19 @@
       <section id="abstract" class="section">
         <h2>Abstract</h2>
         <p>
-          Mental health conditions affect hundreds of millions globally, yet early detection remains limited. While large language models
-(LLMs) have shown promise in mental health applications, their size and computational demands hinder practical deployment. Small 
-language models (SLMs) offer a lightweight alternative, but their use for social media–based mental health prediction remains largely
-underexplored. In this study, we introduce Menta, the first optimized SLM fine-tuned specifically for multi-task mental health prediction
-from social media data. Menta is jointly trained across six classification tasks using a LoRA-based framework, a cross-dataset strategy,
-and a balanced accuracy–oriented loss. Evaluated against nine state-of-the-art SLM baselines, Menta achieves an average improvement
-of 15.2% across tasks covering depression, stress, and suicidality compared with the best-performing non–fine-tuned SLMs. It also
-achieves higher accuracy on depression and stress classification tasks compared to 13B-parameter LLMs, while being approximately
-3.25× smaller. Moreover, we demonstrate real-time, on-device deployment of Menta on an iPhone 15 Pro Max, requiring only
-approximately 3GB RAM. Supported by a comprehensive benchmark against existing SLMs and LLMs, Menta highlights the potential
-for scalable, privacy-preserving mental health monitoring.
+          Mental health conditions affect hundreds of millions of people worldwide, yet scalable and privacy-preserving early detection
+          remains limited. While large language models (LLMs) have demonstrated strong performance in mental health prediction, their com-
+          putational cost and deployment constraints hinder practical use on personal devices. Small language models (SLMs) offer a promising
+          alternative, but the lack of standardized benchmarks has limited systematic evaluation of their effectiveness for social media–based
+          mental health prediction. In this work, we introduce MentaBench, a unified benchmark for multi-task mental health prediction from
+          social media text, covering six classification tasks spanning depression, stress, and suicidality. The benchmark evaluates model
+          accuracy, robustness across datasets, and on-device deployability, enabling fair comparison between SLMs and LLMs. As a refer-
+          ence system, we present Menta, an optimized SLM trained using a LoRA-based multi-task framework with balanced accuracy–oriented
+          objectives. Across nine state-of-the-art SLMs and multiple LLM baselines, Menta achieves an average improvement of 15.2% over
+          non–fine-tuned SLMs and outperforms 13B-parameter LLMs on several tasks while being approximately 3.25× smaller. We further
+          demonstrate real-time, on-device inference on an iPhone 15 Pro Max using approximately 3GB of memory. By providing evaluations
+          among baseline models, MentaBench introduces reproducible comparison and highlights the potential of SLMs for scalable, privacy-
+          preserving mental health monitoring.
           <img src="3.png" alt="main" style="display:block;width:100%;max-width:850px;margin:20px auto 8px;border-radius:18px;"/>
         </p>
       </section>
@@ -405,23 +398,23 @@ for scalable, privacy-preserving mental health monitoring.
       <section class="section">
         <h2>1. Overview</h2>
         <p>
-          Menta is a small language model for digital mental health prediction from social media text.
-          Instead of relying on large server-side LLMs, Menta focuses on early screening of stress,
-          depression, and suicidality in a way that is lightweight enough to run fully on consumer
-          devices such as smartphones.
+          MentaBench is a unified benchmark for multi-task mental health prediction from social media text.
+          It is designed to enable systematic and reproducible evaluation of small language models (SLMs)
+          for early screening of stress, depression, and suicidality, with a focus on accuracy, robustness,
+          and on-device deployability.
         </p>
         <p>
-          The model is jointly trained on six Reddit-based classification tasks that cover stress,
-          depression severity, suicidal ideation, and suicide risk categories. This multi-task setup
-          encourages shared representations across related conditions while preserving task-specific
-          decision boundaries.
+          The benchmark covers six Reddit-based classification tasks spanning stress detection, depression
+          severity, suicidal ideation, and suicide risk categories. Alongside the benchmark, we provide
+          Menta as a compact reference SLM to demonstrate strong multi-task performance and practical
+          on-device feasibility.
         </p>
         <ul class="method-list">
-          <li>4B-parameter small language model with a Qwen-style backbone.</li>
-          <li>Six mental health classification tasks collected from expert-annotated Reddit corpora.</li>
+          <li>Unified benchmark covering six mental health classification tasks.</li>
+          <li>Evaluation of accuracy, robustness across datasets, and on-device deployability.</li>
+          <li>Reference SLM (Menta) based on a 4B-parameter Qwen-style backbone.</li>
           <li>LoRA-based multi-task fine-tuning for efficient adaptation.</li>
           <li>Balanced-accuracy–aware optimization to handle imbalanced labels.</li>
-          <li>Demonstrated real-time on-device deployment for privacy-preserving mental health screening.</li>
         </ul>
       </section>
 
@@ -429,9 +422,10 @@ for scalable, privacy-preserving mental health monitoring.
       <section id="model" class="section">
         <h2>2. Model and Training</h2>
         <p>
-          Menta is built on top of a 4B-parameter transformer-based small language model and fine-tuned
-          with parameter-efficient LoRA adapters for multi-task mental health prediction. The base model
-          remains mostly frozen while LoRA layers capture task-specific adaptations.
+          As a reference system for MentaBench, Menta is built on top of a 4B-parameter transformer-based
+          small language model and fine-tuned with parameter-efficient LoRA adapters for multi-task mental
+          health prediction. The base model remains mostly frozen while LoRA layers capture task-specific
+          adaptations.
         </p>
 
         <div class="badge-row">
@@ -463,7 +457,7 @@ for scalable, privacy-preserving mental health monitoring.
   <!-- 3.1 Overall performance -->
   <h3>3.1 Overall performance compared with other small language models</h3>
   <p>
-    We first compare Menta with several strong small language models that are used without
+    Under the MentaBench evaluation, we compare Menta with several strong small language models that are used without
     mental health fine tuning, including Phi 4 Mini, StableLM and Falcon. On the six tasks
     that cover depression, stress and suicidality, Menta clearly moves the average level of
     performance. The average accuracy improves by about fifteen point two percentage points
@@ -554,7 +548,7 @@ for scalable, privacy-preserving mental health monitoring.
       <section id="datasets" class="section">
         <h2>4. Datasets</h2>
         <p>
-          Menta is trained and evaluated on four expert-annotated Reddit corpora, organized into six
+          MentaBench is built on four expert-annotated Reddit corpora, organized into six
           classification tasks that cover stress, depression, suicidal ideation, and suicide risk.
         </p>
 
@@ -599,9 +593,9 @@ for scalable, privacy-preserving mental health monitoring.
       <section id="deployment" class="section">
         <h2>5. On-Device Deployment</h2>
         <p>
-          We deploy Menta on mobile devices using a lightweight inference stack with quantized weights.
-          The goal is to enable privacy-preserving, real-time mental health screening directly on
-          user devices without uploading raw text to remote servers.
+          We demonstrate on-device deployment as part of MentaBench by running the reference model Menta
+          using a lightweight inference stack with quantized weights. The goal is to enable privacy-preserving,
+          real-time mental health screening directly on user devices without uploading raw text to remote servers.
         </p>
         <ul class="method-list">
   <li>Four billion parameter small language model with a Qwen style backbone.</li>
@@ -633,8 +627,8 @@ for scalable, privacy-preserving mental health monitoring.
       <section class="section">
         <h2>6. Implementation and Resources</h2>
         <p>
-          The full training and evaluation code, together with instructions for reproducing our
-          experiments and running Menta on mobile devices, is available in the GitHub repository.
+          The full benchmark pipeline, together with instructions for reproducing our
+          experiments and running the reference model on mobile devices, is available in the GitHub repository.
           Pre-trained weights and configuration files for different quantization levels are hosted on
           Hugging&nbsp;Face.
         </p>
@@ -648,16 +642,16 @@ for scalable, privacy-preserving mental health monitoring.
       <section id="bibtex" class="section">
   <h2>BibTeX</h2>
   <p>
-    If you find <strong>Menta</strong> useful in your research, please cite it as:
+    If you find <strong>MentaBench</strong> useful in your research, please cite it as:
   </p>
 
-  <pre><code>@article{menta2025,
-  title   = {Menta: A Small Language Model for On-Device Mental Health Prediction},
-  author  = {Zhang, Tianyi and Xue, Xiangyuan and Ruan, Lingyan
-             and Fu, Shiya and Xia, Feng and D'Alfonso, Simon
-             and Kostakos, Vassilis and Dang, Ting and Jia, Hong},
-  journal = {arXiv preprint arXiv:2512.02716},
-  year    = {2025}
+  <pre><code>@inproceedings{mentabench2026,
+  title     = {MentaBench: A Multi-Task Benchmark for Mobile Mental Health Prediction with Small Language Models on Social Media Posts},
+  author    = {Zhang, Tianyi and Xue, Xiangyuan and Ruan, Lingyan and Gao, Yan and D'Alfonso, Simon and Kostakos, Vassilis and Dang, Ting and Jia, Hong},
+  booktitle = {ACM Conference Proceedings},
+  year      = {2026},
+  publisher = {ACM},
+  doi       = {10.1145/nnnnnnn.nnnnnn}
 }</code></pre>
 </section>
 
@@ -665,11 +659,12 @@ for scalable, privacy-preserving mental health monitoring.
   </main>
 
   <footer>
-    <span>© 2025 Menta Authors.</span>
+    <span>© 2026 MentaBench Authors.</span>
     <span>Code and models for research use only. Please see the repository for license details.</span>
   </footer>
 
 </body>
 </html>
+
 
 

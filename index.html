@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Menta: A Small Language Model for On-Device Mental Health Prediction</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Menta: A Small Language Model for On-Device Mental Health Prediction" />
+  <style>
+    :root {
+      --bg-from: #d8f1ea;
+      --bg-to:   #c0e4df;
+      --text-main: #111827;
+      --text-sub:  #4b5563;
+      --card-bg:   #ffffff;
+      --border:    #e5e7eb;
+      --max-width: 960px;
+
+      --btn-bg:    #c9ded7;
+      --btn-border:#90a6a0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+                   "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left,
+                  var(--bg-from) 0, var(--bg-to) 60%, #bcded7 100%);
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* ---------- HERO：顶部区域，仿 Web2Code ---------- */
+    .hero {
+      min-height: 260px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 60px 16px 40px;
+    }
+
+    .hero-inner {
+      max-width: var(--max-width);
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    h1.title {
+      font-size: clamp(2.6rem, 4vw, 3.2rem);
+      margin-bottom: 18px;
+      font-weight: 700;
+    }
+
+    .authors {
+      font-size: 0.95rem;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    .affiliations {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      margin-bottom: 28px;
+    }
+
+    .btn-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 30px;
+      min-width: 160px;
+      justify-content: center;
+      border-radius: 14px;
+      background: var(--btn-bg);
+      border: 1px solid var(--btn-border);
+      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.16);
+      font-size: 1rem;
+      color: #111827;
+      transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease,
+        background 0.15s ease,
+        border-color 0.15s ease;
+      text-decoration: none;
+    }
+
+    .link-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.22);
+      background: #d6e9e3;
+      border-color: #7f9992;
+      text-decoration: none;
+    }
+
+    .link-icon {
+      font-size: 1.3rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.4em;
+    }
+
+    /* ---------- 主体内容：下面的白色区域 ---------- */
+    .content-wrapper {
+      max-width: var(--max-width);
+      margin: 0 auto 60px;
+      padding: 0 16px 40px;
+    }
+
+    .content-card {
+      background: var(--card-bg);
+      border-radius: 24px 24px 24px 24px;
+      padding: 28px 26px 32px;
+      box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    @media (max-width: 640px) {
+      .content-card {
+        padding: 22px 16px 28px;
+      }
+    }
+
+    .section {
+      margin-bottom: 26px;
+      text-align: left; 
+    }
+
+    .section:last-of-type {
+      margin-bottom: 0;
+    }
+
+    .section h2 {
+      font-size: 1.25rem;
+      margin-bottom: 8px;
+      text-align: left;
+    }
+
+    .section h3 {
+      font-size: 1.05rem;
+      margin: 10px 0 4px;
+    }
+
+    .section p {
+      font-size: 0.96rem;
+      color: var(--text-sub);
+      text-align: justify;
+      margin-bottom: 6px;
+    }
+
+    .section ul {
+      font-size: 0.94rem;
+      color: var(--text-sub);
+      margin-left: 20px;
+      margin-top: 4px;
+    }
+
+    .section li {
+      margin-bottom: 4px;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 4px 0 6px;
+    }
+
+    .badge {
+      font-size: 0.8rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #e0ecff;
+      color: #1d4ed8;
+      border: 1px solid rgba(129, 140, 248, 0.6);
+    }
+
+    .dataset-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-top: 6px;
+    }
+
+    .dataset-table th,
+    .dataset-table td {
+      border: 1px solid var(--border);
+      padding: 4px 6px;
+      text-align: left;
+    }
+
+    .dataset-table th {
+      background: #f3f4ff;
+      font-weight: 600;
+    }
+
+    .highlight {
+      margin-top: 6px;
+      font-size: 0.86rem;
+      background: #e0f2fe;
+      border-radius: 10px;
+      padding: 6px 8px;
+      color: #0f172a;
+    }
+
+    pre {
+      background: #020617;
+      color: #e5e7eb;
+      padding: 10px 12px;
+      border-radius: 12px;
+      overflow-x: auto;
+      font-size: 0.8rem;
+      border: 1px solid rgba(30, 64, 175, 0.8);
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        "Liberation Mono", "Courier New", monospace;
+    }
+
+    footer {
+      max-width: var(--max-width);
+      margin: 0 auto 30px;
+      padding: 10px 16px 0;
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+    /* —— 三个手机截图排成一排 —— */
+.device-row {
+  max-width: 1000px;        /* 整块区域的最大宽度 */
+  margin: 20px auto 0;      /* 居中 + 和上面内容留点空 */
+  display: flex;
+  flex-wrap: wrap;          /* 屏幕窄的时候自动换行 */
+  justify-content: center;  /* 居中对齐 */
+  gap: 20px;                /* 图片之间的间距 */
+}
+
+/* —— 单张手机截图的样式 —— */
+.device-shot {
+  display: block;
+  width: 100%;
+  max-width: 260px;         /* 每张图看起来多宽，可以改成 230 / 280 */
+  border-radius: 26px;      /* 圆角，模拟手机壳边缘 */
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.35);  /* 投影 */
+  background: #000;         /* 防止截图白边，看起来更扎实 */
+}
+
+/* 小屏幕时略微缩小一点 */
+@media (max-width: 640px) {
+  .device-shot {
+    max-width: 220px;
+  }
+}
+    /* 按钮里的小 logo 图标 */
+.btn-icon-img {
+  width: 20px;
+  height: 20px;
+  margin-right: 6px;
+  display: inline-block;
+  object-fit: contain;
+  vertical-align: middle;
+}
+.authors sup {
+  margin-left: 2px;        /* 名字和上标之间留一点空 */
+  font-size: 0.75em;
+}
+
+.equal-note {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: var(--text-sub);
+}
+.method-list {
+  max-width: 900px;        /* 可选：控制一行不要太长 */
+  margin: 0 auto;          /* 让整个列表块在页面中居中，但内容左对齐 */
+  padding-left: 1.5rem;
+  text-align: left;
+}
+
+.method-list li {
+  text-align: left !important;        /* 覆盖从父级继承的居中样式 */
+}
+
+
+  </style>
+</head>
+<body>
+
+  <!-- ---------- HERO 顶部 ---------- -->
+  <section class="hero">
+  <div class="hero-inner">
+    <h1 class="title">Menta: A Small Language Model for On-Device Mental Health Prediction</h1>
+
+    <!-- 作者：名字 + * + 上标符号 -->
+    <div class="authors">
+      Tianyi Zhang<sup>†</sup>*,
+      Xiangyuan Xue<sup>§</sup>*,
+      Lingyan Ruan<sup>†</sup>,
+      Shiya Fu<sup>†</sup>,
+      Feng Xia<sup>‡</sup>,
+      Simon D'Alfonso<sup>†</sup>,
+      Vassilis Kostakos<sup>†</sup>,
+      Ting Dang<sup>†</sup>,
+      Hong Jia<sup>§</sup>
+    </div>
+
+    <!-- 单位：先 Melbourne，再 RMIT，最后 Auckland -->
+    <div class="affiliations">
+      <span><sup>†</sup> The University of Melbourne, Australia</span><br />
+      <span><sup>‡</sup> RMIT University, Australia</span><br />
+      <span><sup>§</sup> The University of Auckland, New&nbsp;Zealand</span><br />
+
+      <!-- equal contribution 说明，紧挨着单位 -->
+      <span class="equal-note">
+        * These authors contributed equally to this work.
+      </span>
+    </div>
+
+      <div class="btn-row">
+  <!-- GitHub 按钮 -->
+  <a class="link-btn"
+     href="https://github.com/xxue752-nz/Menta"
+     target="_blank" rel="noopener noreferrer">
+    <img src="11.png"
+         alt="GitHub logo"
+         class="btn-icon-img" />
+    <span>GitHub</span>
+  </a>
+
+  <!-- Hugging Face 按钮 -->
+  <a class="link-btn"
+     href="https://huggingface.co/mHealthAI/Menta"
+     target="_blank" rel="noopener noreferrer">
+    <img src="12.png"
+         alt="Hugging Face logo"
+         class="btn-icon-img" />
+    <span>Hugging&nbsp;Face</span>
+  </a>
+  <a class="link-btn"
+     href="http://arxiv.org/abs/2512.02716"
+     target="_blank" rel="noopener noreferrer">
+    <img src="arxiv.png"
+         alt="arXiv logo"
+         class="btn-icon-img" />
+    <span>arXiv</span>
+  </a>
+</div>
+
+    </div>
+  </header>
+
+  <!-- ---------- 主体内容：所有 section ---------- -->
+  <main class="content-wrapper">
+    <div class="content-card">
+      <!-- Abstract -->
+      <section id="abstract" class="section">
+        <h2>Abstract</h2>
+        <p>
+          Mental health conditions affect hundreds of millions globally, yet early detection remains limited. While large language models
+(LLMs) have shown promise in mental health applications, their size and computational demands hinder practical deployment. Small 
+language models (SLMs) offer a lightweight alternative, but their use for social media–based mental health prediction remains largely
+underexplored. In this study, we introduce Menta, the first optimized SLM fine-tuned specifically for multi-task mental health prediction
+from social media data. Menta is jointly trained across six classification tasks using a LoRA-based framework, a cross-dataset strategy,
+and a balanced accuracy–oriented loss. Evaluated against nine state-of-the-art SLM baselines, Menta achieves an average improvement
+of 15.2% across tasks covering depression, stress, and suicidality compared with the best-performing non–fine-tuned SLMs. It also
+achieves higher accuracy on depression and stress classification tasks compared to 13B-parameter LLMs, while being approximately
+3.25× smaller. Moreover, we demonstrate real-time, on-device deployment of Menta on an iPhone 15 Pro Max, requiring only
+approximately 3GB RAM. Supported by a comprehensive benchmark against existing SLMs and LLMs, Menta highlights the potential
+for scalable, privacy-preserving mental health monitoring.
+          <img src="3.png" alt="main" style="display:block;width:100%;max-width:850px;margin:20px auto 8px;border-radius:18px;"/>
+        </p>
+      </section>
+
+      <!-- 1. Overview -->
+      <section class="section">
+        <h2>1. Overview</h2>
+        <p>
+          Menta is a small language model for digital mental health prediction from social media text.
+          Instead of relying on large server-side LLMs, Menta focuses on early screening of stress,
+          depression, and suicidality in a way that is lightweight enough to run fully on consumer
+          devices such as smartphones.
+        </p>
+        <p>
+          The model is jointly trained on six Reddit-based classification tasks that cover stress,
+          depression severity, suicidal ideation, and suicide risk categories. This multi-task setup
+          encourages shared representations across related conditions while preserving task-specific
+          decision boundaries.
+        </p>
+        <ul class="method-list">
+          <li>4B-parameter small language model with a Qwen-style backbone.</li>
+          <li>Six mental health classification tasks collected from expert-annotated Reddit corpora.</li>
+          <li>LoRA-based multi-task fine-tuning for efficient adaptation.</li>
+          <li>Balanced-accuracy–aware optimization to handle imbalanced labels.</li>
+          <li>Demonstrated real-time on-device deployment for privacy-preserving mental health screening.</li>
+        </ul>
+      </section>
+
+      <!-- 2. Model & Training -->
+      <section id="model" class="section">
+        <h2>2. Model and Training</h2>
+        <p>
+          Menta is built on top of a 4B-parameter transformer-based small language model and fine-tuned
+          with parameter-efficient LoRA adapters for multi-task mental health prediction. The base model
+          remains mostly frozen while LoRA layers capture task-specific adaptations.
+        </p>
+
+        <div class="badge-row">
+          <span class="badge">4B SLM backbone</span>
+          <span class="badge">LoRA adapters</span>
+          <span class="badge">Multi-task training</span>
+          <span class="badge">Balanced-accuracy loss</span>
+        </div>
+
+        <p>
+          The training pipeline uses a shared transformer backbone with task-specific classification
+          heads. LoRA adapters are inserted into attention projections (e.g., query and value
+          matrices), enabling effective fine-tuning while updating only a small fraction of the total
+          parameters.
+        </p>
+        <ul class="method-list">
+  <li><strong>Parameter-efficient tuning.</strong> Only LoRA parameters and classifier heads are trained; base model weights are frozen, substantially reducing GPU memory requirements.</li>
+  <li><strong>Task sampling.</strong> A task-level sampling strategy mitigates dataset size imbalance, preventing large datasets from dominating the multi-task objective.</li>
+  <li><strong>Class imbalance handling.</strong> Class-weighted cross-entropy and a balanced-accuracy–aware term are combined to encourage robust performance on minority classes.</li>
+  <li><strong>Joint optimization.</strong> All six tasks are optimized in a single training run, encouraging the model to share knowledge across stress, depression, and suicidality detection.</li>
+</ul>
+
+      </section>
+
+      <!-- 3. Results -->
+<section id="results" class="section">
+  <h2>3. Results</h2>
+
+  <!-- 3.1 Overall performance -->
+  <h3>3.1 Overall performance compared with other small language models</h3>
+  <p>
+    We first compare Menta with several strong small language models that are used without
+    mental health fine tuning, including Phi 4 Mini, StableLM and Falcon. On the six tasks
+    that cover depression, stress and suicidality, Menta clearly moves the average level of
+    performance. The average accuracy improves by about fifteen point two percentage points
+    compared with the best setting among these models that are not fine tuned for mental
+    health prediction.
+  </p>
+  <p>
+    Figure&nbsp;6 shows accuracy and balanced accuracy scores for each task. The bars for Menta
+    are usually the tallest in both plots. This means that Menta not only predicts correctly
+    more often in general, but also treats minority labels such as severe depression and high
+    suicide risk in a more balanced way. In other words, the model does not simply focus on
+    the majority class, which is important for applications that care about safety.
+  </p>
+
+  <!-- 图 6：柱状图 -->
+  <img
+    src="f1.png"
+    alt="Accuracy and balanced accuracy comparison for Phi 4 Mini, StableLM, Falcon and Menta on six tasks"
+    style="display:block;width:100%;max-width:950px;margin:18px auto;border-radius:16px;"
+  />
+
+  <!-- 3.2 Multi task vs single task -->
+  <h3>3.2 Multi task Menta compared with task specific variants</h3>
+  <p>
+    We then ask whether it is better to train one shared model or separate models for each
+    task. For this purpose we fine tune six task specific variants, named Menta T1 to Menta T6,
+    each one trained only on a single task. All of them use the same backbone and the same
+    LoRA capacity as the general Menta model.
+  </p>
+  <p>
+    The radar charts in Figure&nbsp;7 summarise the result. The red curve for the general Menta
+    model tends to lie near the outer boundary on almost all axes. The curves for the task
+    specific variants sometimes peak slightly higher on their own task, but they drop more on
+    the remaining tasks and produce an irregular shape. Overall, the shared multi task model
+    reaches higher average accuracy and balanced accuracy and shows a more even profile across
+    all six tasks.
+  </p>
+  <p>
+    This suggests that learning all tasks together helps the model capture common patterns in
+    mental health language while still keeping good performance on each individual task. For
+    deployment this is attractive, because one compact four billion parameter model is enough
+    instead of six separate models.
+  </p>
+
+  <!-- 图 7：雷达图 -->
+  <img
+    src="f2.png"
+    alt="Radar charts that show accuracy and balanced accuracy for the general Menta model and six task specific variants"
+    style="display:block;width:100%;max-width:950px;margin:18px auto;border-radius:16px;"
+  />
+
+  <!-- 3.3 Case study -->
+  <h3>3.3 Case study on depression severity</h3>
+  <p>
+    Finally we look at an example from the depression severity task in more detail. The post
+    describes a sudden and very uncomfortable feeling on the tongue that has lasted for about
+    twelve hours. The writer says that the tongue really starts to hurt and asks whether
+    anyone else has ever felt something similar. In the dataset this case is labelled as
+    minimum level of depression.
+  </p>
+  <p>
+    In Figure&nbsp;10 the upper box contains the original post. The lower left part shows the
+    prediction and reasoning of Menta, and the lower right part shows the output of Qwen three.
+    Menta correctly assigns the minimum level. In its explanation it focuses on the fact that
+    the main concern is a strange but local physical sensation, not sadness, hopelessness or
+    other typical signs of a depressive episode. Menta reads the message as a request for
+    medical reassurance and keeps the mental health severity low.
+  </p>
+  <p>
+    Qwen three, in contrast, treats the same post as a case of severe distress. Its reasoning
+    strongly reacts to phrases about intense pain and long duration and connects them directly
+    with high anxiety and serious psychological problems. As a result it overestimates the
+    level of depression. This case study illustrates that after domain specific training Menta
+    is better at separating physical complaints from genuine mental health symptoms and follows
+    the labelling rules of the dataset more closely.
+  </p>
+
+  <!-- 图 10：case study 图 -->
+  <img
+    src="f3.png"
+    alt="Case study that compares Menta and Qwen three on a depression severity example with colour coded highlights"
+    style="display:block;width:100%;max-width:950px;margin:18px auto;border-radius:16px;"
+  />
+</section>
+
+
+      <!-- Datasets -->
+      <section id="datasets" class="section">
+        <h2>4. Datasets</h2>
+        <p>
+          Menta is trained and evaluated on four expert-annotated Reddit corpora, organized into six
+          classification tasks that cover stress, depression, suicidal ideation, and suicide risk.
+        </p>
+
+        <table class="dataset-table">
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>Dataset</th>
+              <th>Label type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Task&nbsp;1</td>
+              <td>Dreaddit</td>
+              <td>Stress vs. non-stress</td>
+            </tr>
+            <tr>
+              <td>Task&nbsp;2–3</td>
+              <td>Depression severity dataset</td>
+              <td>Binary depression + multi-level severity</td>
+            </tr>
+            <tr>
+              <td>Task&nbsp;4</td>
+              <td>SDCNL</td>
+              <td>Suicidal ideation vs. non-ideation</td>
+            </tr>
+            <tr>
+              <td>Task&nbsp;5–6</td>
+              <td>CSSRS-based suicide risk dataset</td>
+              <td>Binary risk + multi-level risk categories</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="highlight">
+          <img src="4.png" alt="dataset" style="display:block;width:100%;max-width:850px;margin:20px auto 8px;border-radius:18px;"/>
+        </p>
+      </section>
+
+      <!-- On-device Deployment -->
+      <section id="deployment" class="section">
+        <h2>5. On-Device Deployment</h2>
+        <p>
+          We deploy Menta on mobile devices using a lightweight inference stack with quantized weights.
+          The goal is to enable privacy-preserving, real-time mental health screening directly on
+          user devices without uploading raw text to remote servers.
+        </p>
+        <ul class="method-list">
+  <li>Four billion parameter small language model with a Qwen style backbone.</li>
+  <li>Six mental health classification tasks collected from expert annotated Reddit data.</li>
+  <li>LoRA based multi task fine tuning for efficient adaptation.</li>
+  <li>Balanced accuracy aware training objective that handles imbalanced labels.</li>
+  <li>Real time on device deployment for privacy preserving mental health screening.</li>
+</ul>
+
+        <p class="highlight">
+          <div class="device-row">
+  <img src="device_demo1.jpg"
+       alt="Menta mobile UI – model selection"
+       class="device-shot" />
+
+  <img src="device_demo2.jpg"
+       alt="Menta mobile UI – task selection"
+       class="device-shot" />
+
+  <img src="device_demo3.jpg"
+       alt="Menta mobile UI – sample count selection"
+       class="device-shot" />
+</div>
+
+        </p>
+      </section>
+
+      <!-- Implementation / resources -->
+      <section class="section">
+        <h2>6. Implementation and Resources</h2>
+        <p>
+          The full training and evaluation code, together with instructions for reproducing our
+          experiments and running Menta on mobile devices, is available in the GitHub repository.
+          Pre-trained weights and configuration files for different quantization levels are hosted on
+          Hugging&nbsp;Face.
+        </p>
+        <ul class="method-list">
+          <li><strong>GitHub:</strong> end-to-end training, evaluation, and on-device demo code.</li>
+          <li><strong>Hugging&nbsp;Face:</strong> model checkpoints and configuration files.</li>
+          <li><strong>Mobile demo:</strong> a reference iOS application showing multi-task predictions for stress, depression, and suicidality from example posts.</li>
+        </ul>
+      </p>
+      </section>
+      <section id="bibtex" class="section">
+  <h2>BibTeX</h2>
+  <p>
+    If you find <strong>Menta</strong> useful in your research, please cite it as:
+  </p>
+
+  <pre><code>@article{menta2025,
+  title   = {Menta: A Small Language Model for On-Device Mental Health Prediction},
+  author  = {Zhang, Tianyi and Xue, Xiangyuan and Ruan, Lingyan
+             and Fu, Shiya and Xia, Feng and D'Alfonso, Simon
+             and Kostakos, Vassilis and Dang, Ting and Jia, Hong},
+  journal = {arXiv preprint arXiv:2512.02716},
+  year    = {2025}
+}</code></pre>
+</section>
+
+    </div>
+  </main>
+
+  <footer>
+    <span>© 2025 Menta Authors.</span>
+    <span>Code and models for research use only. Please see the repository for license details.</span>
+  </footer>
+
+</body>
+</html>
+
+
